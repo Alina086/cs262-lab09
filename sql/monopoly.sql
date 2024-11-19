@@ -32,6 +32,7 @@ CREATE TABLE PlayerGame (
 	gameID integer REFERENCES Game(ID),
 	playerID integer REFERENCES Player(ID),
 	score integer
+	locationid integer REFERENCES locationofpiece(ID);
 	);
 
 CREATE TABLE Property (

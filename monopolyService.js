@@ -29,6 +29,7 @@ router.get('/players/:id', readPlayer);
 router.put('/players/:id', updatePlayer);
 router.post('/players', createPlayer);
 router.delete('/players/:id', deletePlayer);
+router.get('/players/:id/games', getGamesForPlayer);
 
 app.use(router);
 app.listen(port, () => console.log(`Listening on port ${port}`));
@@ -89,6 +90,16 @@ function createPlayer(req, res, next) {
 
 function deletePlayer(req, res, next) {
   db.oneOrNone('DELETE FROM player WHERE id=${id} RETURNING id', req.params)
+    .then((data) => {
+      returnDataOr404(res, data);
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
+function getGamesForPlayer(req, res, next) {
+  db.any('SELECT game.ID FROM game, player, playergame WHERE player.id = ${id} AND player.id = playergame.playerid AND game.id = playergame.gameid', req.params)
     .then((data) => {
       returnDataOr404(res, data);
     })
